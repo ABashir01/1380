@@ -1,0 +1,5 @@
+word1 | url1 10
+word2 | url2 5
+word3 | url3 2 url2 1
+word1 word2 | url1 8
+word4 | url3 4

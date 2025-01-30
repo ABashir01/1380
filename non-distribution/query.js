@@ -32,7 +32,7 @@ const {execSync} = require('child_process');
 
 function query(indexFile, args) {
   const input = args.join(' ');
-  const processedQuery = execSync(`echo "${input}" | ./c/process.sh | ./c/stem.js`, {encoding: 'utf-8'}).trim();
+  const processedQuery = execSync(`echo "${input}" | ./c/process.sh | ./c/stem.js | tr "\r\n" " "`, {encoding: 'utf-8'}).trim();
   const lines = fs.readFileSync(indexFile, {encoding: 'utf8', flag: 'r'}).split('\n');
   for (const line of lines) {
     if (line.includes(processedQuery)) {

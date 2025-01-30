@@ -42,7 +42,10 @@ rl.on('close', () => {
 
   // 5. Print each absolute URL to the console, one per line.
   for (const href of hrefs) {
-    const url = baseURL + href;
+    let url = href;
+    if (!href.includes(baseURL)) { // Handling for both relative and absolute URLs
+      url = baseURL + href;
+    }
     console.log(url);
   }
 });

@@ -79,6 +79,11 @@ const printMerged = (err, data) => {
   // 3. For each line in `localIndexLines`, parse them and add them to the `local` object where keys are terms and values contain `url` and `freq`.
   for (const line of localIndexLines) {
     const lineArray = line.split(' | ');
+
+    if (lineArray.length !== 3) {
+      continue;
+    }
+
     const term = lineArray[0];
     const freq = lineArray[1];
     const url = lineArray[2];
@@ -89,6 +94,11 @@ const printMerged = (err, data) => {
   // Use the .trim() method to remove leading and trailing whitespace from a string.
   for (const line of globalIndexLines) {
     const lineArray = line.split(' | ');
+
+    if (lineArray.length !== 2) {
+      continue;
+    }
+
     const term = lineArray[0].trim();
     const tempURLFs = lineArray[1].trim().split(' ');
     const urlfs = [];

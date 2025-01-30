@@ -1,0 +1,6 @@
+word1 | url1 5 url2
+word2 | 3 url3
+word3 url4 10 |
+word4 | url5 notANumber
+word5 |
+| url6 8
