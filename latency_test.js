@@ -16,7 +16,7 @@ obs.observe({ entryTypes: ['measure'] });
 let totalDuration = 0;
 for (let i = 0; i < 10; i++) {
     performance.mark('A');
-    const num = (a,b) => a+b;
+    const num = 12;
     const serialized = distribution.util.serialize(num);
     const deserialized = distribution.util.deserialize(serialized);
     performance.mark('B');
