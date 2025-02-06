@@ -1,5 +1,7 @@
-const distribution = require('../config.js');
-const util = distribution.util;
+// const distribution = require('../config.js');
+// const util = distribution.util;
+const util = require('../distribution/util/serialization.js');
+// const {serialize, deserialize} = require('../distribution/util/serialization.js');
 
 test('(1 pts) serializeNumber', () => {
   const number = 42;
