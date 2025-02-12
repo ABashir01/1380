@@ -3,6 +3,11 @@ const url = require('url');
 const log = require('../util/log');
 
 
+const routes = require('../all/routes');
+const distribution = require('@brown-ds/distribution');
+const node = require('@brown-ds/distribution/distribution/local/node');
+
+
 /*
     The start function will be called to start your node.
     It will take a callback as an argument.
@@ -14,8 +19,12 @@ const start = function(callback) {
   const server = http.createServer((req, res) => {
     /* Your server will be listening for PUT requests. */
 
-    // Write some code...
-
+    // TODO: Change this
+    if (req.method !== 'PUT') {
+      res.statusCode = 400;
+      res.end();
+      return;
+    }
 
     /*
       The path of the http request will determine the service to be used.
@@ -23,7 +32,9 @@ const start = function(callback) {
     */
 
 
-    // Write some code...
+    const requestURL = url.parse(req.url, true);
+    const service = requestURL.pathname.split('/')[1];
+    const method = requestURL.pathname.split('/')[2];
 
 
     /*
@@ -41,18 +52,56 @@ const start = function(callback) {
       Our nodes expect data in JSON format.
   */
 
-    // Write some code...
+    let body = '';
 
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+
+    req.on('end', () => {
+      let data = null;
+      try {
+        data = distribution.util.deserialize(body);
+      } catch (e) {
+        res.statusCode = 400;
+        res.end();
+        return;
+      }
+    
 
       /* Here, you can handle the service requests. */
 
-      // Write some code...
+      routes.get(service, (error, serviceName) => {
+        if (error) {
+          res.statusCode = 404;
+          res.end();
+          return;
+        }
 
-      const serviceName = service;
+        serviceName[method](...data, (error, result) => {
+          if (error) {
+            res.statusCode = 400;
+            res.end();
+            return;
+          }
+      
+          global.moreStatus.counts++;
+
+          res.statusCode = 200;
+          res.write(distribution.util.serialize(result));
+          res.end();
+        });
+      });
+
+
+    });  
+        
+
+      // const serviceName = service;
 
 
 
-        // Write some code...
+      
 
   });
 
