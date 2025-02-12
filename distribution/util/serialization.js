@@ -31,9 +31,7 @@ function serialize(object) {
           // object[i] = serialize(object[i]);
           myArray.push(serialize(object[i]));
         }
-        console.log("myArray: " + myArray);
         serialized_object = { type: "Array", value: myArray };
-        console.log("Serialized Object: " + serialized_object);
       }
       else if (object instanceof Date) {
         serialized_object = { type: "Date", value: object.toISOString() };
@@ -64,8 +62,6 @@ function deserialize(string) {
   try {
     object = JSON.parse(string);
 
-    console.log("Parsed");
-
     // Check the type of the object
   switch (object["type"]) {
     case 'Number':
@@ -87,9 +83,6 @@ function deserialize(string) {
     case 'Array':
       let myArray = object.value;
       let deserializedArray = [];
-      console.log("Type of myArray: " + typeof(myArray));
-      console.log("Array is array: " + Array.isArray(myArray));
-      console.log("myArray: " + myArray);
       for (let i = 0; i < myArray.length; i++) {
         deserializedArray.push(deserialize(myArray[i]));
       }
@@ -108,9 +101,6 @@ function deserialize(string) {
   }
   catch (e) {
 
-    console.log("Fuck");
-    console.log("Error:", e);
-    console.log(string);
 
     // switch (string['type']) {
     //   case 'Array':

@@ -3,7 +3,7 @@
   "version": "0.1.7",
   "description": "A library for building distributed systems.",
   "main": "distribution.js",
-  "useLibrary": true,
+  "useLibrary": false,
   "directories": {
     "test": "test"
   },
@@ -26,20 +26,16 @@
     "yargs": "^17.7.2"
   },
   "report": {
-    "hours": 999,
-    "loc": 999,
+    "hours": 8,
+    "loc": "~100",
     "dev": {
-      "cpu-no": 999,
-      "mem-gb": 999,
-      "ssd-gb": 999
-    },
-    "throughput": {
-      "dev": [],
-      "aws": []
+      "cpu-no": 8,
+      "mem-gb": 16,
+      "ssd-gb": 1000
     },
     "latency": {
-      "dev": [],
-      "aws": []
+      "dev": [0.0181, 0.0216, 0.0230],
+      "aws": [0.0381, 0.0472, 0.0880]
     },
     "dloc": -99
   }

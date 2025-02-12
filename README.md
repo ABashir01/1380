@@ -78,4 +78,17 @@ distribution.all.comm.send(['sid'], {node: node, service: 'status', method: 'get
 
 # Results and Reflections
 
-> ...
+# M1: Serialization / Deserialization
+
+## Summary
+
+
+
+My implementation comprises two software components, totaling ~100 lines of code. Key challenges included making the objects work recursively, which took most of my time. It turned out to be a very minor issue where I was just naming my variable instead of stating 'let' which didn't error for some reason, but caused really weird behavior in terms of the recursion.
+
+## Correctness & Performance Characterization
+
+
+*Correctness*: I wrote 5 tests; these tests take 0.05s to execute. This includes triple nested objects, testing NaN in JS, Infinity in JS, arrays with missing indices, and an object with some weird values.
+
+*Performance*: The latency of various subsystems is described in the `"latency"` portion of package.json. The characteristics of my development machines are summarized in the `"dev"` portion of package.json. The latency is formated as [number, function, object].

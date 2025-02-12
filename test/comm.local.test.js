@@ -25,9 +25,10 @@ test('(10 pts) comm: status.get()', (done) => {
   const message = [
     'sid',
   ];
-
+  
   local.comm.send(message, remote, (e, v) => {
     try {
+      console.log(v);
       expect(e).toBeFalsy();
       expect(v).toBe(id.getSID(node));
       done();
@@ -78,6 +79,7 @@ let localServer = null;
 beforeAll((done) => {
   distribution.node.start((server) => {
     localServer = server;
+    console.log(`Server started on ${global.nodeConfig.ip}:${global.nodeConfig.port}`);
     done();
   });
 });
