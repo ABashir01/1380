@@ -21,15 +21,22 @@ function send(message, remote, callback) {
     
     const serialized_message = distribution.util.serialize(message);
 
-    const url = `http://local/${remote.service}/${remote.method}`;
+    
+
+    let url = `http://${remote.node.ip}:${remote.node.port}/local/${remote.service}/${remote.method}`;
+    if (remote.gid) {
+        url = `http://${remote.node.ip}:${remote.node.port}/${remote.gid}/${remote.service}/${remote.method}`;
+    }
+    console.log("URL:", url);
 
     const options = {
-        method: 'POST',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: serialized_message,
     }
+
+    console.log("Options:", options);
 
     const request = http.request(url, options, (response) => {
         let body = '';
@@ -39,13 +46,19 @@ function send(message, remote, callback) {
         });
 
         response.on('end', () => {
+            // console.log("Response:", body);
             let data = null;
             try {
                 data = distribution.util.deserialize(body);
+                // console.log("Data:", data);
             } catch (e) {
                 callback(Error(e), null);
             }
 
+            if (response.statusCode !== 200) {
+                callback(data, null);
+                return;
+            }
             callback(null, data);
         });
         
@@ -55,6 +68,7 @@ function send(message, remote, callback) {
         callback(Error(error), null);
     });
 
+    request.write(serialized_message);
     request.end();
 
 }

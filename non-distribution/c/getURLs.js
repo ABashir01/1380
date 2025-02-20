@@ -7,10 +7,10 @@ Usage: ./getURLs.js <base_url>
 
 const readline = require('readline');
 const {JSDOM} = require('jsdom');
-const {URL} = require('url');
+// const {URL} = require('url');
 
 // 1. Read the base URL from the command-line argument using `process.argv`.
-let baseURL = '';
+let baseURL = process.argv[2];
 
 if (baseURL.endsWith('index.html')) {
   baseURL = baseURL.slice(0, baseURL.length - 'index.html'.length);
@@ -22,17 +22,32 @@ const rl = readline.createInterface({
   input: process.stdin,
 });
 
+let text = '';
+
 rl.on('line', (line) => {
   // 2. Read HTML input from standard input (stdin) line by line using the `readline` module.
+  text += line;
 });
 
 rl.on('close', () => {
   // 3. Parse HTML using jsdom
+  const dom = new JSDOM(text);
+
 
   // 4. Find all URLs:
   //  - select all anchor (`<a>`) elements) with an `href` attribute using `querySelectorAll`.
   //  - extract the value of the `href` attribute for each anchor element.
-    // 5. Print each absolute URL to the console, one per line.
+  const urls = Array.from(dom.window.document.querySelectorAll('a'));
+  const hrefs = urls.map((a) => a.href);
+
+  // 5. Print each absolute URL to the console, one per line.
+  for (const href of hrefs) {
+    let url = href;
+    if (!href.includes(baseURL)) { // Handling for both relative and absolute URLs
+      url = baseURL + href;
+    }
+    console.log(url);
+  }
 });
 
 

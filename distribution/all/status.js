@@ -1,3 +1,4 @@
+const distribution = require("@brown-ds/distribution");
 
 const status = function(config) {
   const context = {};
@@ -5,6 +6,11 @@ const status = function(config) {
 
   return {
     get: (configuration, callback) => {
+      callback = callback || function() { };
+
+      if (configuration === 'nid') {
+        distribution.gid.comm.send()
+      }
     },
 
     spawn: (configuration, callback) => {

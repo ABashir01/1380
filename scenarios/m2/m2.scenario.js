@@ -1,3 +1,4 @@
+const util = require('@brown-ds/distribution/distribution/util/util.js');
 const distribution = require('../../config.js');
 
 test('(2 pts) (scenario) simple callback practice', () => {
@@ -6,6 +7,16 @@ test('(2 pts) (scenario) simple callback practice', () => {
 
   function add(a, b, callback) {
     const result = a + b;
+    callback(result);
+  }
+
+  function subtract(a, b, callback) {
+    const result = a - b;
+    callback(result);
+  }
+
+  function divide(a, b, callback) {
+    const result = a / b;
     callback(result);
   }
 
@@ -28,6 +39,11 @@ test('(2 pts) (scenario) simple callback practice', () => {
   subtract(10, 5, storeResults);
   divide(14, 2, storeResults);
 
+  
+  add(1, 2, storeResults);
+  subtract(10, 5, storeResults);
+  divide(14, 2, storeResults);
+
 
   expect(results).toEqual([3, 5, 7]);
 });
@@ -41,21 +57,26 @@ test('(2 pts) (scenario) collect errors and successful results', (done) => {
   // Sample service
   const appleDeliveryService = (callback) => {
     callback(null, 'good apples');
+    callback(null, 'good apples');
   };
 
   const pineappleDeliveryService = (callback) => {
+    callback(Error('bad pineapples'), null);
     callback(Error('bad pineapples'), null);
   };
 
   const bananaDeliveryService = (callback) => {
     callback(null, 'good bananas');
+    callback(null, 'good bananas');
   };
 
   const peachDeliveryService = (callback) => {
     callback(null, 'good peaches');
+    callback(null, 'good peaches');
   };
 
   const mangoDeliveryService = (callback) => {
+    callback(Error('bad mangoes'), null);
     callback(Error('bad mangoes'), null);
   };
 
@@ -109,7 +130,7 @@ test('(5 pts) (scenario) use rpc', (done) => {
 
   const node = {ip: '127.0.0.1', port: 9009};
 
-  let addOneRPC = '?';
+  addOne = util.wire.createRPC(util.wire.toAsync(addOne));
 
   const rpcService = {
     addOne: addOneRPC,

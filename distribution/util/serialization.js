@@ -62,6 +62,7 @@ function deserialize(string) {
   try {
     object = JSON.parse(string);
 
+
     // Check the type of the object
   switch (object["type"]) {
     case 'Number':
@@ -101,6 +102,7 @@ function deserialize(string) {
   }
   catch (e) {
 
+    console.log("Error:", e);
 
     // switch (string['type']) {
     //   case 'Array':

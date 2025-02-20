@@ -5,6 +5,8 @@ const log = require('../util/log');
 
 const routes = require('../all/routes');
 const distribution = require('@brown-ds/distribution');
+// const distribution = require('../../distribution');
+const node = require('@brown-ds/distribution/distribution/local/node');
 
 
 /*
@@ -17,9 +19,11 @@ const distribution = require('@brown-ds/distribution');
 const start = function(callback) {
   const server = http.createServer((req, res) => {
     /* Your server will be listening for PUT requests. */
+    // console.log("Req:", req);
 
     // TODO: Change this
     if (req.method !== 'PUT') {
+      // console.log("Method not allowed");
       res.statusCode = 400;
       res.end();
       return;
@@ -32,8 +36,11 @@ const start = function(callback) {
 
 
     const requestURL = url.parse(req.url, true);
-    const service = requestURL.pathname.split('/')[1];
-    const method = requestURL.pathname.split('/')[2];
+    const group = requestURL.pathname.split('/')[1];
+    const service = requestURL.pathname.split('/')[2];
+    const method = requestURL.pathname.split('/')[3];
+    // console.log("Service", service);
+    // console.log("Method", method);
 
 
     /*
@@ -57,11 +64,17 @@ const start = function(callback) {
       body += chunk;
     });
 
+    
+
     req.on('end', () => {
       let data = null;
+      console.log("Body", body);
+      // console.log("body type:", typeof body);
       try {
         data = distribution.util.deserialize(body);
+        console.log("Data", data);
       } catch (e) {
+        console.log("Error", e);
         res.statusCode = 400;
         res.end();
         return;
@@ -74,36 +87,60 @@ const start = function(callback) {
       Then, you need to serialize the result and send it back to the caller.
       */
 
-      routes.get(service, (error, serviceName) => {
-        if (error) {
-          res.statusCode = 404;
-          res.end();
-          return;
-        }
+      if (group === 'local') {
 
-        serviceName[method](...data, (error, result) => {
+        distribution.local.routes.get(service, (error, serviceName) => {
           if (error) {
+            // console.log("Routes Error", error);
             res.statusCode = 400;
+            res.write(distribution.util.serialize(error));
             res.end();
             return;
           }
 
-          res.statusCode = 200;
-          res.write(distribution.util.serialize(result));
-          res.end();
+          serviceName[method](...data, (error, result) => {
+            if (error) {
+              // console.log("Service Error", error);
+              res.statusCode = 400;
+              res.write(distribution.util.serialize(error));
+              res.end();
+              return;
+            }
+
+            // console.log("Result", result);
+            res.statusCode = 200;
+            res.write(distribution.util.serialize(result));
+            res.end();
+          });
         });
-      });
+      } else {
+        distribution.local.routes.get({service: service, gid: group}, (error, serviceName) => {
+          if (error) {
+            // console.log("Routes Error", error);
+            res.statusCode = 400;
+            res.write(distribution.util.serialize(error));
+            res.end();
+            return;
+          }
 
+          serviceName[method](...data, (error, result) => {
+            if (error) {
+              // console.log("Service Error", error);
+              res.statusCode = 400;
+              res.write(distribution.util.serialize(error));
+              res.end();
+              return;
+            }
 
-    });  
-        
-
-      // const serviceName = service;
-
-
-
-      
-
+            // console.log("Result", result);
+            res.statusCode = 200;
+            res.write(distribution.util.serialize(result));
+            res.end();
+          });
+        }
+        );
+      }
+    });
   });
 
 
