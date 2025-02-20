@@ -10,6 +10,17 @@ function routes(config) {
    * @param {Callback} callback
    */
   function put(service, name, callback = () => { }) {
+    callback = callback || function() { };
+
+    let remote = {service: 'routes', method: 'put'};
+    let groupName = context.gid;
+    let message = [service, name];
+    console.log("Routes Put", groupName, message);
+
+    global.distribution[groupName].comm.send(message, remote, (e, v) => {
+      callback(e, v);
+      return;
+    });
   }
 
   /**

@@ -61,7 +61,11 @@ test('(2 pts) all.routes.put(echo)', (done) => {
     const r2 = {node: n2, service: 'routes', method: 'get'};
     const r3 = {node: n3, service: 'routes', method: 'get'};
 
+    console.log("FIRST LOOP DREAMIN: ", v);
+    console.log("FIRST LOOP NIGHTMARE: ", e);
+
     distribution.local.comm.send(['echo'], r1, (e, v) => {
+      console.log("SECOND LOOP CAN YOU HEAR ME:", r1, e, v);
       try {
         expect(e).toBeFalsy();
         expect(v.echo()).toBe('echo!');
@@ -70,6 +74,7 @@ test('(2 pts) all.routes.put(echo)', (done) => {
         return;
       }
       distribution.local.comm.send([{service: 'echo'}], r2, (e, v) => {
+        console.log("THIRD LOOP CAN YOU HEAR ME:", r2, e, v);
         try {
           expect(e).toBeFalsy();
           expect(v.echo()).toBe('echo!');

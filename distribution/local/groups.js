@@ -1,9 +1,12 @@
-const distribution = require("@brown-ds/distribution");
+// const distribution = require("@brown-ds/distribution");
 const { id } = require("../util/util");
+const { string } = require("yargs");
 
 const groups = {};
 
 groups.all = {};
+
+
 
 groups.get = function(name, callback) {
     callback = callback || function() { };
@@ -20,24 +23,33 @@ groups.get = function(name, callback) {
 groups.put = function(config, group, callback) {
     callback = callback || function() { };
 
-    /* Initialize distribution object */
-    if (!(config in distribution)) {
-        distribution[config] = {};
-        distribution[config].status =
-            require('../all/status')({gid: config});
-        distribution[config].comm =
-            require('../all/comm')({gid: config});
-        distribution[config].gossip =
-            require('../all/gossip')({gid: config});
-        distribution[config].groups =
-            require('../all/groups')({gid: config});
-        distribution[config].routes =
-            require('../all/routes')({gid: config});
-        distribution[config].mem =
-            require('../all/mem')({gid: config});
-        distribution[config].store =
-            require('../all/store')({gid: config});
+    if (typeof config === 'object') {
+        config = config.gid;
+    } else if (typeof config === 'string') {
+        config = config;
+    } else {
+        callback(Error('Invalid configuration - must be object or string'), null);
+        return;
     }
+
+    /* Initialize distribution object */
+    global.distribution[config] = {};
+    global.distribution[config].status =
+        require('../all/status')({gid: config});
+    global.distribution[config].comm =
+        require('../all/comm')({gid: config});
+    global.distribution[config].gossip =
+        require('../all/gossip')({gid: config});
+    global.distribution[config].groups =
+        require('../all/groups')({gid: config});
+    global.distribution[config].routes =
+        require('../all/routes')({gid: config});
+    global.distribution[config].mem =
+        require('../all/mem')({gid: config});
+    global.distribution[config].store =
+        require('../all/store')({gid: config});
+
+    console.log("Distribution object keys: ", Object.keys(global.distribution));
 
     for (const nodeID in group) {
         if (!(nodeID in groups['all'])) {
@@ -46,7 +58,7 @@ groups.put = function(config, group, callback) {
     }
     
     groups[config] = group;
-    console.log(groups);
+    // console.log(groups);
     callback(null, group);
 };
 
@@ -59,8 +71,8 @@ groups.del = function(name, callback) {
     }
 
     // Remove from distribution object
-    delete distribution[name];
-
+    // delete distribution[name];
+ 
     let returnVal = groups[name];
     delete groups[name];
     console.log(groups);

@@ -3,6 +3,10 @@
 
 const http = require('node:http');
 
+const serialize = require('@brown-ds/distribution/distribution/util/util').serialize;
+const deserialize = require('@brown-ds/distribution/distribution/util/util').deserialize;
+
+
 /**
  * @typedef {Object} Target
  * @property {string} service
@@ -19,15 +23,17 @@ const http = require('node:http');
 function send(message, remote, callback) {
     callback = callback || function() { };
     
-    const serialized_message = distribution.util.serialize(message);
+    const serialized_message = serialize(message);
 
     
 
     let url = `http://${remote.node.ip}:${remote.node.port}/local/${remote.service}/${remote.method}`;
-    if (remote.gid) {
+
+    // Distributed case
+    if (remote.gid && remote.gid !== 'local') {
         url = `http://${remote.node.ip}:${remote.node.port}/${remote.gid}/${remote.service}/${remote.method}`;
     }
-    console.log("URL:", url);
+    // console.log("URL:", url);
 
     const options = {
         method: 'PUT',
@@ -36,7 +42,8 @@ function send(message, remote, callback) {
         },
     }
 
-    console.log("Options:", options);
+    // console.log("Options:", options);
+    // console.log("Serialized Message:", serialized_message);
 
     const request = http.request(url, options, (response) => {
         let body = '';
@@ -49,7 +56,7 @@ function send(message, remote, callback) {
             // console.log("Response:", body);
             let data = null;
             try {
-                data = distribution.util.deserialize(body);
+                data = deserialize(body);
                 // console.log("Data:", data);
             } catch (e) {
                 callback(Error(e), null);
@@ -59,6 +66,15 @@ function send(message, remote, callback) {
                 callback(data, null);
                 return;
             }
+
+            console.log("SHAPE THE FUTURE:", data, remote.gid);
+
+            // Distributed case 
+            if (remote.gid && remote.gid !== 'local') {
+                callback(data.error, data.result);
+                return;
+            }
+
             callback(null, data);
         });
         

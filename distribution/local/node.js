@@ -3,10 +3,14 @@ const url = require('url');
 const log = require('../util/log');
 
 
-const routes = require('../all/routes');
-const distribution = require('@brown-ds/distribution');
+// const routes = require('../all/routes');
+// const distribution = require('@brown-ds/distribution');
 // const distribution = require('../../distribution');
-const node = require('@brown-ds/distribution/distribution/local/node');
+// const node = require('@brown-ds/distribution/distribution/local/node');
+
+const serialize = require('@brown-ds/distribution/distribution/util/util').serialize;
+const deserialize = require('@brown-ds/distribution/distribution/util/util').deserialize;
+
 
 
 /*
@@ -68,11 +72,11 @@ const start = function(callback) {
 
     req.on('end', () => {
       let data = null;
-      console.log("Body", body);
+      // console.log("Body", body);
       // console.log("body type:", typeof body);
       try {
-        data = distribution.util.deserialize(body);
-        console.log("Data", data);
+        data = deserialize(body);
+        // console.log("Data", data);
       } catch (e) {
         console.log("Error", e);
         res.statusCode = 400;
@@ -88,53 +92,63 @@ const start = function(callback) {
       */
 
       if (group === 'local') {
-
-        distribution.local.routes.get(service, (error, serviceName) => {
+        console.log("Local");
+        console.log("Precheck", data, method, service, requestURL);
+        global.distribution.local.routes.get(service, (error, serviceName) => {
           if (error) {
-            // console.log("Routes Error", error);
+            console.log("Routes Error", error);
             res.statusCode = 400;
-            res.write(distribution.util.serialize(error));
+            res.write(serialize(error));
             res.end();
             return;
           }
 
+          console.log("Quick Check", data, serviceName, method);
+
           serviceName[method](...data, (error, result) => {
+            console.log("RIP OUT THE WORLD:", error, result);
             if (error) {
-              // console.log("Service Error", error);
+              console.log("Service Error", error, result, data, serviceName, method);
               res.statusCode = 400;
-              res.write(distribution.util.serialize(error));
+              res.write(serialize(error));
               res.end();
               return;
             }
 
             // console.log("Result", result);
             res.statusCode = 200;
-            res.write(distribution.util.serialize(result));
+            res.write(serialize(result));
             res.end();
           });
         });
       } else {
-        distribution.local.routes.get({service: service, gid: group}, (error, serviceName) => {
+        console.log("Not Local");
+        console.log({service: service, gid: group});
+        global.distribution.local.routes.get({service: service, gid: group}, (error, serviceName) => {
+          console.log("Service Name", serviceName);
+          console.log("Error", error);
           if (error) {
-            // console.log("Routes Error", error);
+            console.log("Routes Error", error);
             res.statusCode = 400;
-            res.write(distribution.util.serialize(error));
+            res.write(serialize(error));
             res.end();
             return;
           }
 
+          console.log("BREAKER servicename", serviceName);
+
           serviceName[method](...data, (error, result) => {
-            if (error) {
-              // console.log("Service Error", error);
-              res.statusCode = 400;
-              res.write(distribution.util.serialize(error));
-              res.end();
-              return;
-            }
+            // if (error) {
+            //   console.log("Service Error", error, result, data, serviceName, method);
+            //   res.statusCode = 400;
+            //   res.write(serialize(error));
+            //   res.end();
+            //   return;
+            // }
 
             // console.log("Result", result);
             res.statusCode = 200;
-            res.write(distribution.util.serialize(result));
+            res.write(serialize({error: error, result: result}));
             res.end();
           });
         }

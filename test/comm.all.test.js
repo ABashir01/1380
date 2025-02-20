@@ -33,7 +33,7 @@ test('(2 pts) all.comm.send(status.get(nid))', (done) => {
       done(error);
     }
   });
-});
+}); // Set timeout to 30 seconds
 
 test('(2 pts) local.comm.send(all.status.get(nid))', (done) => {
   const nids = Object.values(mygroupGroup).map((node) => id.getNID(node));
@@ -46,6 +46,8 @@ test('(2 pts) local.comm.send(all.status.get(nid))', (done) => {
     // from local node, run mygroup.status.get() on n5 via send()
     distribution.local.comm.send(['nid'], remote, (e, v) => {
       expect(e).toEqual({});
+
+      console.log("THIS IS V: ", v);
 
       try {
         expect(Object.values(v).length).toBe(nids.length);
@@ -92,6 +94,7 @@ beforeAll((done) => {
           distribution.local.comm.send([], remote, (e, v) => {
             remote.node = n6;
             distribution.local.comm.send([], remote, (e, v) => {
+              // console.log("Boutta start nodes");
               startNodes();
             });
           });
@@ -99,6 +102,8 @@ beforeAll((done) => {
       });
     });
   });
+
+  // console.log ("Everything was started");
 
   const startNodes = () => {
     mygroupGroup[id.getSID(n1)] = n1;
@@ -120,6 +125,7 @@ beforeAll((done) => {
     // Now, start the nodes listening node
     distribution.node.start((server) => {
       localServer = server;
+      // console.log("Local server started");
 
       // Start the nodes
       distribution.local.status.spawn(n1, (e, v) => {
@@ -129,6 +135,7 @@ beforeAll((done) => {
               distribution.local.status.spawn(n5, (e, v) => {
                 distribution.local.status.spawn(n6, (e, v) => {
                   groupInstantiation();
+                  // console.log("All nodes started");
                 });
               });
             });
