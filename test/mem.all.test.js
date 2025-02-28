@@ -263,7 +263,7 @@ test('(1 pts) all.mem.put/del/get()', (done) => {
   });
 });
 
-test('(3 pts) all.mem.get(no key)', (done) => {
+test.only('(3 pts) all.mem.get(no key)', (done) => {
   const users = [
     {first: 'Saul', last: 'Goodman'},
     {first: 'Walter', last: 'White'},

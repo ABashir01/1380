@@ -8,6 +8,8 @@ const routes = {}
 routes["status"] = require(path.join(__dirname, 'status'));
 routes["comm"] = require(path.join(__dirname, 'comm'));
 routes["groups"] = require(path.join(__dirname, 'groups'));
+routes["mem"] = require(path.join(__dirname, 'mem'));
+routes["store"] = require(path.join(__dirname, 'store'));
 
 
 // TODO: It should probably error if we ttry to overwrite one of the built-in routes (i.e. status, routes, comm)
@@ -19,9 +21,9 @@ routes["groups"] = require(path.join(__dirname, 'groups'));
 function get(configuration, callback) {
     callback = callback || function() { };
 
-    console.log("THESE ARE THE ROUTES: ", routes);
-    console.log("THIS IS THE CONFIGURATION: ", configuration.toString());
-    console.log("THIS IS THE TYPE OF CONFIGURATION: ", typeof configuration);
+    // console.log("THESE ARE THE ROUTES: ", routes);
+    // console.log("THIS IS THE CONFIGURATION: ", configuration.toString());
+    // console.log("THIS IS THE TYPE OF CONFIGURATION: ", typeof configuration);
 
     if (typeof configuration === 'object') {
         let service = configuration.service;
@@ -118,7 +120,7 @@ function put(service, configuration, callback) {
     }
 
     routes[configuration] = service;
-    console.log("Can you feel it:", routes);
+    // console.log("Can you feel it:", routes);
     callback(null, configuration);
 }
 

@@ -10,6 +10,10 @@ test('(5 pts) (scenario) use the local store', (done) => {
   const user = {first: 'Josiah', last: 'Carberry'};
   const key = 'jcarbspsg';
 
+  distribution.local.store.put(user, key, (e, v) => {
+    check();
+  });
+
 
   function check() {
     distribution.local.store.get(key, (e, v) => {
@@ -39,8 +43,8 @@ test('(5 pts) (scenario) hash functions return different nodes', () => {
     util.id.getNID({ip: '192.168.0.4', port: 8000}),
     util.id.getNID({ip: '192.168.0.5', port: 8000}),
   ];
-  let key1 = '?';
-  let key2 = '?';
+  let key1 = '5';
+  let key2 = '17';
 
 
   const kid1 = util.id.getID(key1);
@@ -67,7 +71,7 @@ test('(5 pts) (scenario) hash functions return the same node', () => {
     util.id.getNID({ip: '192.168.0.4', port: 8000}),
   ];
 
-  let key = '?';
+  let key = '';
 
   const kid = util.id.getID(key);
 

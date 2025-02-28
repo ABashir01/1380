@@ -56,15 +56,15 @@ function comm(config) {
             results[nodeID] = v2;
           }
           pending--;
-          console.log("Comm Results: ", error, results);
+          // console.log("Comm Results: ", error, results);
 
           if (pending === 0) {
-            console.log("This is v: ", v);
-            console.log("This is e: ", e);
-            console.log("This is v2:", v2);
-            console.log("This is e2:", e2);
-            console.log("All Comm Results: ", results);
-            console.log("All Comm Error: ", error);
+            // console.log("This is v: ", v);
+            // console.log("This is e: ", e);
+            // console.log("This is v2:", v2);
+            // console.log("This is e2:", e2);
+            // console.log("All Comm Results: ", results);
+            // console.log("All Comm Error: ", error);
             callback(error, results);
           }
         });
@@ -72,7 +72,7 @@ function comm(config) {
 
       if (pending === 0) {
         // console.log("All Comm Results: ", results);
-        console.log("THE OTHER ONE HAPPENED: ", results);
+        // console.log("THE OTHER ONE HAPPENED: ", results);
         callback(error, results);
       }
       

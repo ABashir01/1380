@@ -15,7 +15,7 @@ function routes(config) {
     let remote = {service: 'routes', method: 'put'};
     let groupName = context.gid;
     let message = [service, name];
-    console.log("Routes Put", groupName, message);
+    // console.log("Routes Put", groupName, message);
 
     global.distribution[groupName].comm.send(message, remote, (e, v) => {
       callback(e, v);

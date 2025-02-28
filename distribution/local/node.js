@@ -78,7 +78,7 @@ const start = function(callback) {
         data = deserialize(body);
         // console.log("Data", data);
       } catch (e) {
-        console.log("Error", e);
+        // console.log("Error", e);
         res.statusCode = 400;
         res.end();
         return;
@@ -92,18 +92,18 @@ const start = function(callback) {
       */
 
       if (group === 'local') {
-        console.log("Local");
-        console.log("Precheck", data, method, service, requestURL);
+        // console.log("Local");
+        // console.log("Precheck", data, method, service, requestURL);
         global.distribution.local.routes.get(service, (error, serviceName) => {
           if (error) {
-            console.log("Routes Error", error);
+            // console.log("Routes Error", error);
             res.statusCode = 400;
             res.write(serialize(error));
             res.end();
             return;
           }
 
-          console.log("Quick Check", data, serviceName, method);
+          // console.log("Quick Check", data, serviceName, method);
 
           serviceName[method](...data, (error, result) => {
             console.log("RIP OUT THE WORLD:", error, result);
@@ -122,20 +122,20 @@ const start = function(callback) {
           });
         });
       } else {
-        console.log("Not Local");
-        console.log({service: service, gid: group});
+        // console.log("Not Local");
+        // console.log({service: service, gid: group});
         global.distribution.local.routes.get({service: service, gid: group}, (error, serviceName) => {
-          console.log("Service Name", serviceName);
-          console.log("Error", error);
+          // console.log("Service Name", serviceName);
+          // console.log("Error", error);
           if (error) {
-            console.log("Routes Error", error);
+            // console.log("Routes Error", error);
             res.statusCode = 400;
             res.write(serialize(error));
             res.end();
             return;
           }
 
-          console.log("BREAKER servicename", serviceName);
+          // console.log("BREAKER servicename", serviceName);
 
           serviceName[method](...data, (error, result) => {
             // if (error) {

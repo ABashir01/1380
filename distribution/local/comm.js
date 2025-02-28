@@ -33,7 +33,7 @@ function send(message, remote, callback) {
     if (remote.gid && remote.gid !== 'local') {
         url = `http://${remote.node.ip}:${remote.node.port}/${remote.gid}/${remote.service}/${remote.method}`;
     }
-    // console.log("URL:", url);
+    console.log("URL:", url);
 
     const options = {
         method: 'PUT',

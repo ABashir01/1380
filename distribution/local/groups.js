@@ -23,7 +23,14 @@ groups.get = function(name, callback) {
 groups.put = function(config, group, callback) {
     callback = callback || function() { };
 
+    let hashVal = null;
+
     if (typeof config === 'object') {
+
+        if ('hash' in config) {
+            hashVal = config.hash;
+        }
+
         config = config.gid;
     } else if (typeof config === 'string') {
         config = config;
@@ -45,11 +52,11 @@ groups.put = function(config, group, callback) {
     global.distribution[config].routes =
         require('../all/routes')({gid: config});
     global.distribution[config].mem =
-        require('../all/mem')({gid: config});
+        require('../all/mem')({gid: config, hash: hashVal});
     global.distribution[config].store =
-        require('../all/store')({gid: config});
+        require('../all/store')({gid: config, hash: hashVal});
 
-    console.log("Distribution object keys: ", Object.keys(global.distribution));
+    // console.log("Distribution object keys: ", Object.keys(global.distribution));
 
     for (const nodeID in group) {
         if (!(nodeID in groups['all'])) {
@@ -75,7 +82,7 @@ groups.del = function(name, callback) {
  
     let returnVal = groups[name];
     delete groups[name];
-    console.log(groups);
+    // console.log(groups);
     callback(null, returnVal);
 };
 
@@ -96,7 +103,7 @@ groups.add = function(name, node, callback) {
     }
     
     groups[name][nodeID] = node;
-    console.log(groups);
+    // console.log(groups);
     callback(null, node);
 };
 
@@ -115,7 +122,7 @@ groups.rem = function(name, node, callback) {
     // }
       
     delete groups[name][node];
-    console.log(groups);
+    // console.log(groups);
     callback(null, node);
 };
 
